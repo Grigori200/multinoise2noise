@@ -1,0 +1,208 @@
+# Numeric parameters of every evaluation reported in the manuscript.
+# Paths default to the layout of the cryo_datasets repository (CRYO_DATASETS_DIR).
+
+data_root: ${oc.env:CRYO_DATASETS_DIR}
+output_dir: ${oc.env:EVAL_OUTPUT_DIR,${hydra:runtime.cwd}/eval_outputs}
+
+# Restrict a run to some datasets, e.g. 'select=[10025,10948]'. null = all datasets.
+select: null
+skip_existing: true
+collect_only: false
+shard:
+  index: 0
+  count: 1
+
+# Tight molecular mask: auto_mask(reference, threshold_fraction * max(reference),
+# [extend_px], soft_edge_px); the soft edge is added outside the binary core.
+mask:
+  threshold_fraction: 0.05
+  extend_px: 3
+  soft_edge_px: 10
+
+# Global model-to-map FSC (Table 4, Fig. 5, Supp. Fig. S2).
+fsc:
+  thresholds: [0.143, 0.5]
+  # Phases are randomised beyond the first shell where the unmasked FSC < randomize_fsc_at.
+  randomize_fsc_at: 0.8
+  # false: the phases of the reference are randomised as well (gold-standard convention).
+  vs_reference: false
+  # Seed of the phase randomisation of work item (subset s, half h) is seed + 10 * s + h.
+  seed: 0
+
+# Local model-to-map resolution (Figs. 6-8).
+locres:
+  stage: items
+  # Window step, radius (sampling / 2) and soft edge (sampling) in Å.
+  sampling_angstrom: 25
+  threshold: 0.5
+  # true: only the phases of the half-map are randomised.
+  vs_reference: true
+  # Seed of work item (subset s, half h) is seed + 10 * s + h.
+  seed: 0
+  # Voxels with symmetrised mask > mask_core enter summaries and histograms.
+  mask_core: 0.5
+  histogram:
+    n_bins: 60
+    # Range: lower_percentile of the pooled frequencies up to the finest resolution reached.
+    lower_percentile: 2
+
+# Reconstructions of the denoised test subsets subsets/denoised_4_<s>.star, refined
+# orientations of the raw refinement, two half-maps per subset.
+reconstruction:
+  refine: 4
+  subsets: [1, 2, 3, 4, 5]
+  halves: [1, 2]
+  image_mode: denoised_mean
+
+# Layout of Fig. 5 (fsc_main), Fig. 6 (locres histograms) and Supp. Fig. S2 (fsc grid).
+figures:
+  dpi: 300
+  fsc_main_dataset: "10474"
+  fsc_main_methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf,
+                     multi_noise2noise_dw, multi_noise2noise_ctf_dw]
+  columns:
+    - {title: T20S Proteasome, real: "10025", sim: "10025_sim"}
+    - {title: Apoferritin, real: "10474", sim: "10474_sim"}
+    - {title: GroEL, real: "10948", sim: "10948_sim"}
+  rows:
+    - title: Simulated
+      kind: sim
+      methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf]
+    - title: "Real\nCTF comparison"
+      kind: real
+      methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf]
+    - title: "Real\nDW comparison"
+      kind: real
+      methods: [noise2noise, multi_noise2noise, multi_noise2noise_dw, multi_noise2noise_ctf_dw]
+  styles:
+    raw: {color: "#555555", linestyle: ":"}
+    noise2noise: {color: "#6baed6", linestyle: "-"}
+    noise2noise_ctf: {color: "#3a5fa8", linestyle: "--"}
+    multi_noise2noise: {color: "#41ab5d", linestyle: "-"}
+    multi_noise2noise_ctf: {color: "#238b45", linestyle: "--"}
+    multi_noise2noise_dw: {color: "#f2a33a", linestyle: "-"}
+    multi_noise2noise_ctf_dw: {color: "#d9661f", linestyle: "--"}
+
+# Figs. 7 (real) and 8 (simulated), render_locres: isosurfaces of <density> of subset <subset> coloured by the
+# averaged, symmetrised local-resolution maps; columns as in figures.columns.
+locres_render:
+  subset: 1
+  density: half_1_sharp.mrc
+  # Isosurface level: this percentile of the positive density inside the mask core.
+  threshold_percentile: 85
+  # Colour range per dataset: these percentiles of the local resolution in the mask core,
+  # pooled over the methods of the figure, widened by clim_margin of the range on each side.
+  clim_percentiles: [5, 80]
+  clim_margin: 0.05
+  camera: xy
+  zoom: 1.35
+  window_px: 800
+  figures:
+    locres_grid_sim:
+      title: Simulated
+      kind: sim
+      methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf]
+    locres_grid_real:
+      title: Real
+      kind: real
+      methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf,
+                multi_noise2noise_dw, multi_noise2noise_ctf_dw]
+
+# Fig. 2 (fig:impact): FRC between denoised test images and clean projections of models
+# trained with experiment=<ds>/multinoise2noise/split_<N> (N frames averaged into the input).
+# Read from <results_dir>/frame_sweep/split_<N>/frc_metrics_test.csv (written by the test
+# stage of source.train) for every split_<N> directory found.
+frame_sweep:
+  # Mean FRC over the rings i > 0 with 2 * angpix * n_rings / i <= cutoff_angstrom.
+  cutoff_angstrom: 8.0
+  csv_name: frc_metrics_test.csv
+  variants:
+    singular: {column: singular_FourierRingCorrelation, label: Denoised leave-some-out inputs,
+               color: "#1f77b4", marker: s}
+    mean: {column: mean_FourierRingCorrelation, label: Averaged denoised leave-some-out inputs,
+           color: "#ff7f0e", marker: o}
+    full_dose: {column: full_dose_FourierRingCorrelation, label: Denoised whole recording inputs,
+                color: "#2ca02c", marker: D}
+  # Vertical markers: Topaz-Denoise averages n_frames / 2 frames, Multi-Noise2Noise n_frames - 1.
+  datasets:
+    "10025_sim": {title: Proteasome T20S, n_frames: 38}
+    "10474_sim": {title: Human Light Chain Apoferritin, n_frames: 30}
+    "10948_sim": {title: GroEL, n_frames: 40}
+
+# Table 4 (tab:fsc_recon): one block per dataset; best value per block in bold.
+tables:
+  fsc_recon:
+    sections:
+      - title: Simulated datasets
+        datasets: {"10025_sim": T20S, "10474_sim": Apo., "10948_sim": GroEL}
+        methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf]
+      - title: Real datasets
+        datasets: {"10025": T20S, "10474": Apo., "10948": GroEL}
+        methods: [noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf,
+                  multi_noise2noise_dw, multi_noise2noise_ctf_dw]
+
+methods:
+  raw: Raw
+  noise2noise: Topaz-Denoise
+  noise2noise_ctf: Topaz-Denoise + CTF
+  multi_noise2noise: Multi-Noise2Noise
+  multi_noise2noise_ctf: Multi-Noise2Noise + CTF
+  multi_noise2noise_dw: Multi-Noise2Noise + DW
+  multi_noise2noise_ctf_dw: Multi-Noise2Noise + CTF + DW
+
+_real_methods: &real_methods
+  [raw, noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf,
+   multi_noise2noise_dw, multi_noise2noise_ctf_dw]
+_sim_methods: &sim_methods
+  [raw, noise2noise, noise2noise_ctf, multi_noise2noise, multi_noise2noise_ctf]
+
+datasets:
+  "10025":
+    angpix: 0.9856
+    symmetry: D7
+    methods: *real_methods
+    reference_map: ${data_root}/10025/10025_model.mrc
+    mask: ${output_dir}/masks/10025_mask_tight.mrc
+    results_dir: ${data_root}/results/10025
+  "10025_sim":
+    angpix: 0.9856
+    symmetry: D7
+    methods: *sim_methods
+    reference_map: ${data_root}/10025_sim/10025_sim_model.mrc
+    mask: ${output_dir}/masks/10025_sim_mask_tight.mrc
+    results_dir: ${data_root}/results/10025_sim
+  "10474":
+    angpix: 0.706667
+    symmetry: O
+    methods: *real_methods
+    reference_map: ${data_root}/10474/10474_model.mrc
+    mask: ${output_dir}/masks/10474_mask_tight.mrc
+    results_dir: ${data_root}/results/10474
+  "10474_sim":
+    angpix: 0.706667
+    symmetry: O
+    methods: *sim_methods
+    reference_map: ${data_root}/10474_sim/10474_sim_model.mrc
+    mask: ${output_dir}/masks/10474_sim_mask_tight.mrc
+    results_dir: ${data_root}/results/10474_sim
+  "10948":
+    angpix: 0.813
+    symmetry: D7
+    methods: *real_methods
+    reference_map: ${data_root}/10948/10948_model.mrc
+    mask: ${output_dir}/masks/10948_mask_tight.mrc
+    results_dir: ${data_root}/results/10948
+  "10948_sim":
+    angpix: 0.813
+    symmetry: D7
+    methods: *sim_methods
+    reference_map: ${data_root}/10948_sim/10948_sim_model.mrc
+    mask: ${output_dir}/masks/10948_sim_mask_tight.mrc
+    results_dir: ${data_root}/results/10948_sim
+
+hydra:
+  run:
+    dir: ${output_dir}/hydra/${now:%Y-%m-%d_%H-%M-%S}
+  output_subdir: null
+  job:
+    chdir: false

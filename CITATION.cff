@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the article below."
+title: "Multi-Noise2Noise"
+abstract: "Physics-aware self-supervised denoising of cryo-EM particle movies."
+type: software
+license: MIT
+repository-code: "https://github.com/Grigori200/multinoise2noise"
+authors:
+  - family-names: Grzesiuk
+    given-names: Mateusz
+    email: mateusz.grzesiuk@pwr.edu.pl
+    affiliation: Wrocław University of Science and Technology
+  - family-names: Karanowski
+    given-names: Konrad
+    affiliation: Wrocław University of Science and Technology
+  - family-names: Kuczbański
+    given-names: Radosław
+    affiliation: Wrocław University of Science and Technology
+  - family-names: Rzepiela
+    given-names: Andrzej
+    affiliation: Swiss Federal Institute of Technology Zurich
+  - family-names: Frey
+    given-names: Lukas
+    affiliation: Swiss Federal Institute of Technology Zurich
+  - family-names: Zięba
+    given-names: Maciej
+    affiliation: Wrocław University of Science and Technology
+preferred-citation:
+  type: article
+  title: "Multi-Noise2Noise: Physics-Aware Self-Supervised Denoising for Cryo-Electron Microscopy"
+  journal: Bioinformatics
+  status: submitted
+  authors:
+    - family-names: Grzesiuk
+      given-names: Mateusz
+    - family-names: Karanowski
+      given-names: Konrad
+    - family-names: Kuczbański
+      given-names: Radosław
+    - family-names: Rzepiela
+      given-names: Andrzej
+    - family-names: Frey
+      given-names: Lukas
+    - family-names: Zięba
+      given-names: Maciej

@@ -1,0 +1,55 @@
+_target_: source._noise2noise.multinoise2noise_patch.MultiNoise2NoisePatchLightningModel
+
+model: ${model}
+
+mean: ${datamodule.mean}
+std: ${datamodule.std}
+min: ${datamodule.min}
+max: ${datamodule.max}
+
+eval_half: ${datamodule.train_half}
+
+reconstruction_mode: "denoised_mean"
+original_reconstruction_path: ${datamodule.original_reconstruction_path}
+
+# Patch-wise inference settings
+patch_size: 128
+patch_overlap: 12
+patch_batch_size: 18
+
+logging:
+  sample_epochs: 5
+  reconstruction_wait: 30000
+  reconstruction_step: 10
+
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 1e-4
+  betas: [0.9, 0.999]
+  eps: 1e-08
+  weight_decay: 0.02
+
+lr_scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  patience: 3
+  threshold: 1e-07
+  factor: 0.5
+
+criterion:
+  _target_: torch.nn.MSELoss
+  reduction: "mean"
+
+metrics:
+  _target_: torchmetrics.MetricCollection
+  metrics:
+    - _target_: torchmetrics.regression.MeanSquaredError
+    - _target_: torchmetrics.image.PeakSignalNoiseRatio
+      data_range: ${as_tuple:"${datamodule.min}","${datamodule.max}"}
+    - _target_: source.loss_functions.frc.FourierRingCorrelation
+      size: ${datamodule.new_size}
+
+defaults:
+  - reconstructor: default
+
+monitor: "val/loss"
+compile: false

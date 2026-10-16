@@ -1,0 +1,12 @@
+_target_: source.models.scunet.SCUNet
+
+# Grayscale cryo-EM input/output.
+in_nc: 1
+
+# Architecture defaults from SCUNet implementation.
+config: [2, 2, 2, 2, 2, 2, 2]
+dim: 64
+drop_path_rate: 0.0
+
+# Default to full image resolution; patch experiments can override this.
+input_resolution: ${datamodule.new_size}

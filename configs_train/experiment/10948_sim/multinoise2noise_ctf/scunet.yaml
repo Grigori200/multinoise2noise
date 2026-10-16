@@ -1,0 +1,41 @@
+# @package _global_
+defaults:
+  - override /datamodule: "10948_sim"
+  - override /lightning_model: multinoise2noise_ctf_split
+  - override /model: scunet
+  - override /trainer: ddp
+  - override /callbacks: default_reconstruction
+  - override /logger: wandb
+
+core:
+  group: noise2noise
+
+trainer:
+  min_epochs: 20
+  max_epochs: 500
+
+datamodule:
+  batch_size: 1
+  num_workers: 2
+  particles_star_path: "${datamodule.dataset_path}/${datamodule.dataset_name}_subset.star"
+  original_reconstruction_path: "${datamodule.dataset_path}/half_1_reconstruction.mrc"
+
+lightning_model:
+  criterion:
+    _target_: source.loss_functions.ctf_l2.CTF_MSELoss
+    n: 1
+    correct_frequencies: True
+  logging:
+    reconstruction_wait: 3000
+    reconstruction_step: 5
+    sample_epochs: 5
+
+model:
+  input_resolution: ${datamodule.new_size}
+
+# Initialize SCUNet from grayscale denoising checkpoint (.pth state dict style).
+pretrained_weights_path: ${paths.root_dir}/model_zoo/scunet_gray_50.pth
+
+tags: ['noise2noise', 'scunet', '10948', 'simulated']
+
+task_name: "noise2noise_ctf_scunet"

@@ -1,0 +1,52 @@
+{
+    "title": "Multi-Noise2Noise: Physics-Aware Self-Supervised Denoising for Cryo-Electron Microscopy (code)",
+    "upload_type": "software",
+    "description": "<p>Code of <em>Multi-Noise2Noise: Physics-Aware Self-Supervised Denoising for Cryo-Electron Microscopy</em> (Grzesiuk, Karanowski, Kuczbański, Rzepiela, Frey, Zięba; Bioinformatics, submitted).</p><p>Multi-Noise2Noise trains a U-Net on dose-fractionated particle movies: the average of all but one frame is the input and the held-out frame the target, optionally with CTF- and dose-weighted Fourier losses. The repository contains training, denoising, 3D reconstruction of the denoised particles, the evaluation behind every reported number and the motion-correction and extraction pipelines used to prepare the particle movies.</p><p>Data, partitions, masks, reference maps, checkpoints and reconstructions are in the cryo_datasets repository (DVC).</p>",
+    "creators": [
+        {
+            "name": "Grzesiuk, Mateusz",
+            "affiliation": "Wrocław University of Science and Technology"
+        },
+        {
+            "name": "Karanowski, Konrad",
+            "affiliation": "Wrocław University of Science and Technology"
+        },
+        {
+            "name": "Kuczbański, Radosław",
+            "affiliation": "Wrocław University of Science and Technology"
+        },
+        {
+            "name": "Rzepiela, Andrzej",
+            "affiliation": "Swiss Federal Institute of Technology Zurich"
+        },
+        {
+            "name": "Frey, Lukas",
+            "affiliation": "Swiss Federal Institute of Technology Zurich"
+        },
+        {
+            "name": "Zięba, Maciej",
+            "affiliation": "Wrocław University of Science and Technology"
+        }
+    ],
+    "access_right": "open",
+    "license": "mit",
+    "keywords": [
+        "cryo-EM",
+        "cryo-electron microscopy",
+        "denoising",
+        "self-supervised learning",
+        "Noise2Noise",
+        "dose weighting",
+        "contrast transfer function",
+        "3D reconstruction"
+    ],
+    "related_identifiers": [
+        {
+            "identifier": "https://github.com/cryo-EM-team/cryo_datasets",
+            "relation": "references",
+            "resource_type": "dataset"
+        }
+    ],
+    "notes": "Accompanies the article submitted to Bioinformatics; its DOI will be added once published.",
+    "language": "eng"
+}
