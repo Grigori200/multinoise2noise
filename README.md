@@ -1,8 +1,14 @@
 # Multi-Noise2Noise
 
+[![DOI](https://zenodo.org/badge/1422769016.svg)](https://doi.org/10.5281/zenodo.23427776)
+
 Code of *Multi-Noise2Noise: Physics-Aware Self-Supervised Denoising for Cryo-Electron
 Microscopy* (Grzesiuk, Karanowski, Kuczbański, Rzepiela, Frey, Zięba; Bioinformatics,
 submitted). How to cite: [`CITATION.cff`](CITATION.cff). License: [MIT](LICENSE).
+
+Archived on Zenodo: [10.5281/zenodo.23427776](https://doi.org/10.5281/zenodo.23427776) (all
+versions); the submitted version is release `1.0.0`,
+[10.5281/zenodo.23427777](https://doi.org/10.5281/zenodo.23427777).
 
 Multi-Noise2Noise trains a U-Net on dose-fractionated particle movies: the average of all but
 one frame is the input and the held-out frame the target, optionally with CTF- and

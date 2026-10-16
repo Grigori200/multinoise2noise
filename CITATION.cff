@@ -4,6 +4,16 @@ title: "Multi-Noise2Noise"
 abstract: "Physics-aware self-supervised denoising of cryo-EM particle movies."
 type: software
 license: MIT
+version: "1.0.0"
+date-released: "2026-10-17"
+doi: "10.5281/zenodo.23427776"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23427776"
+    description: "Zenodo concept DOI (all versions)"
+  - type: doi
+    value: "10.5281/zenodo.23427777"
+    description: "Zenodo DOI of version 1.0.0"
 repository-code: "https://github.com/Grigori200/multinoise2noise"
 authors:
   - family-names: Grzesiuk
