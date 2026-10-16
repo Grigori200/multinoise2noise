@@ -23,7 +23,7 @@ README for `dvc pull` and Google Drive access).
 
 ## Installation
 
-Tested on Linux with Python 3.13 (ETH Euler; training and reconstruction on one RTX 4090).
+Tested on Linux with Python 3.13 (training and reconstruction on one RTX 4090).
 
 ```bash
 python3.13 -m venv .venv
@@ -81,15 +81,6 @@ Configs are `configs_train/experiment/<dataset>/<family>/<variant>.yaml`; checkp
 | Multi-Noise2Noise + CTF + DW (experimental data) | `<ds>/multinoise2noise_ctf/dose_weighted` | `multi_noise2noise_ctf_dw` | `dose_weighted_ctf.ckpt` |
 | Fig. 2, `N` frames averaged into the input (simulated data) | `<ds>_sim/multinoise2noise/split_<N>` | `split_<N>` | – |
 | Raw (not denoised) reconstructions | `<ds>/multinoise2noise/raw` | `raw` | – |
-
-Other configs are not used in the paper:
-
-- `dose_weighted_legacy`: loss configuration the DW checkpoints were trained with
-  (`dose_weighted{,_ctf}_legacy.ckpt`); `dose_weighted{,_ctf}.ckpt` hold the same weights for
-  the manuscript loss (weights unchanged, not retrained).
-- `split_<N>` of the experimental datasets, `raw_full`, `dose_weighted_both`,
-  `dose_weighted_regularized`, `*_patch`, `scunet`, `base_scunet`, and the `dose_weighted`
-  configs of the simulated datasets.
 
 ## Training
 
