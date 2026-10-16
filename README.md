@@ -32,9 +32,8 @@ pip install -r requirements.txt   # exact environment of the manuscript
 pip install --no-deps -e .        # this package (entry points need the repository checkout)
 ```
 
-`pip install -e ".[scunet,test,render]"` instead resolves current versions of the same
-dependencies. The `scunet` extra (`einops`, `timm`) is only needed for `model=scunet`, which
-the paper does not use; `render` (`pyvista`) for `source.evaluation.render_locres` (Figs. 7
+`pip install -e ".[test,render]"` instead resolves current versions of the same
+dependencies; `render` (`pyvista`) is needed for `source.evaluation.render_locres` (Figs. 7
 and 8).
 
 Machine-specific paths go into `configs_train/local/default.yaml` (git-ignored):
@@ -59,12 +58,6 @@ smoke tests only.
 pip install pytest
 python -m pytest tests -p no:cacheprovider
 ```
-
-`tests/test_train_smoke.py` trains one epoch of `experiment=10948/multinoise2noise/default`
-with `debug=limit` on a synthetic HDF5 (400 particles, 4 frames, 32 × 32 px), checks the
-two half-map reconstructions of the test stage and denoises the dataset with the
-checkpoint (about 4 min on a CPU). `tests/test_cli_help.py` runs `--help` of every entry
-point.
 
 ## Method variants
 
@@ -96,9 +89,7 @@ python -m source.train experiment=10948/multinoise2noise/default \
 Validation particles drive only early stopping and the LR schedule; with `split_mode=column`
 they never enter a reconstruction. After training, the best checkpoint reconstructs the two
 half-maps from the two `rlnRandomSubset` halves of the test set (`trainer.test`), written to
-`${storage_dir}/reconstruction/<ds>/<task_name>/denoised_mean/`. Without the overrides, the
-configs use the earlier setting (`<ds>_subset.star`, `split_mode=random_subset`, training on
-its `rlnRandomSubset == 1` half, validation on the other half).
+`${storage_dir}/reconstruction/<ds>/<task_name>/denoised_mean/`.
 
 ## Reconstructing the evaluation subsets
 
@@ -175,7 +166,7 @@ source/
   datasets/                 datamodules, datasets, split_star (partition builder)
   evaluation/               masks, FSC, local resolution, tables, figures
   loss_functions/           CTF- and dose-weighted losses, FRC
-  models/                   U-Net (and SCUNet, not used in the paper)
+  models/                   U-Net
   reconstruction/           back-projection, CTF, dose weighting, postprocessing
 tests/
 ```
