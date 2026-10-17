@@ -7,8 +7,8 @@ Microscopy* (Grzesiuk, Karanowski, Kuczbański, Rzepiela, Frey, Zięba; Bioinfor
 submitted). How to cite: [`CITATION.cff`](CITATION.cff). License: [MIT](LICENSE).
 
 Archived on Zenodo: [10.5281/zenodo.23427776](https://doi.org/10.5281/zenodo.23427776) (all
-versions); the submitted version is release `1.0.0`,
-[10.5281/zenodo.23427777](https://doi.org/10.5281/zenodo.23427777).
+versions); the submitted version is release `1.0.1`,
+[10.5281/zenodo.23427940](https://doi.org/10.5281/zenodo.23427940).
 
 Multi-Noise2Noise trains a U-Net on dose-fractionated particle movies: the average of all but
 one frame is the input and the held-out frame the target, optionally with CTF- and
